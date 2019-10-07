@@ -66,4 +66,4 @@ For feedback and suggestions, please email me on `abhisavaliya01@gmail.com`
 
 # About Author
 
-`Abhi Savaliya` | `abhisavaliya01@gmail.com` | [GitHub](`https://github.com/abhisavaliya`) | [LinkedIn](`https://www.linkedin.com/in/abhisavaliya/`)
+`Abhi Savaliya` | `abhisavaliya01@gmail.com` | [GitHub](https://github.com/abhisavaliya) | [LinkedIn](https://www.linkedin.com/in/abhisavaliya/)
