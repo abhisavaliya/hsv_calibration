@@ -11,17 +11,17 @@ Wth `HSV Calibration`, get the accurate `HSV Upper and Lower Range` from the `im
 
 1). `Images`
 ```sh
-from hsv-calibration import ProcessImage
+from hsv_calibration import ProcessImage
 ProcessImage.process_image("C:\Downloads\image.jpg")
 ```
 2). `Webcam`
 ```sh
-from hsv-calibration import ProcessImage
+from hsv_calibration import ProcessImage
 ProcessImage.process_webcam()
 ```
 3). `Mobile Camera (Use IPCam to get the IP Address)`
 ```sh
-from hsv-calibration import ProcessImage
+from hsv_calibration import ProcessImage
 ProcessImage.process_mobile_camera("http://192.168.2.15:8080/")
 ```
 
