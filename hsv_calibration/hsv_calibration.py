@@ -288,10 +288,9 @@ class FromWebcam:
 
 class ProcessImage:  
     
-    trackbars=TrackBars()
     
-    def inner_process(self,init_img):
-        trackbars=self.trackbars
+    
+    def inner_process(self,init_img,trackbars):
         
         bright_dark_img=trackbars.brightness_darkness(init_img)
         blurred_img=trackbars.blur_image(bright_dark_img)
@@ -332,23 +331,26 @@ class ProcessImage:
     @staticmethod
     def process_webcam():
         try:
+            trackbars=TrackBars()
             cls_image=FromWebcam()
             while True:
                 init_img=cls_image.read_image()
-                ProcessImage().inner_process(init_img)
+                ProcessImage().inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
-            cv2.destroyAllWindows()
             cls_image.webcam_release()
+            cv2.destroyAllWindows()
+            
         
     @staticmethod
     def process_image(url):
         try:
+            trackbars=TrackBars()
             cls_image=FromImage(url)
             while True:
                 init_img=cls_image.read_image()
-                ProcessImage().inner_process(init_img)
+                ProcessImage().inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
@@ -357,12 +359,13 @@ class ProcessImage:
     @staticmethod
     def process_mobile_camera(url):
         try:
+            trackbars=TrackBars()
             url=url+"shot.jpg"
             while True:
                 imgRequest=requests.get(url)
                 imgArray=np.array(bytearray(imgRequest.content),dtype=np.uint8)
                 init_img=cv2.imdecode(imgArray,-1)
-                ProcessImage().inner_process(init_img)
+                ProcessImage().inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
