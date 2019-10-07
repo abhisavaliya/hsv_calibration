@@ -5,4 +5,4 @@ Created on Sun Oct  6 16:23:41 2019
 @author: abhis
 """
 
-from hsv_calibration import ProcessImage
+from hsv_calibration.hsv_calibration import ProcessImage
