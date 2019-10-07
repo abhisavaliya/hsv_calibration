@@ -8,7 +8,7 @@ group=parser.add_mutually_exclusive_group()
 group.add_argument("-i","--image",type=str, metavar="", help="Image Mode, Pass URL: Example: xyz.py -i Downloads/image.jpg",dest="image")
 group.add_argument("-c","--camera",type=str, metavar="", help="Camera Mode, Pass IP Address: Example: xyz.py -c http://192.168.2.87:8081/",dest="camera")
 group.add_argument("-w","--webcam", action="store_true", help="Webcam Mode, Pass NOTHING: Example: xyz.py -w",dest="webcam")
-group.add_argument("-s","--size", type=int, metavar="", help="(Must be last Parameter) Resize Image: Example: xyz.py -i Downloads/image.jpg -s 800 600",dest="x")
+group.add_argument("-v","--video",type=str, metavar="", help="Video Mode, Pass URL: Example: xyz.py -i Downloads/video.mp4",dest="video")
 
 
 args, unknown = parser.parse_known_args()
@@ -273,11 +273,12 @@ class FromImage:
     
         
 class FromWebcam:
-    def __init__(self):
-        self.webcam=cv2.VideoCapture(0)
+    def __init__(self,camvid=0):
+        self.camvid=camvid
+        self.webcam=cv2.VideoCapture(self.camvid,cv2.CAP_DSHOW)
           
     def read_image(self):
-        _,self.frame=self.webcam.read(0)
+        _,self.frame=self.webcam.read()
         self.frame = cv2.flip(self.frame,1)
         return self.frame 
     
@@ -329,10 +330,10 @@ class ProcessImage:
         cv2.imshow("Output",output)
 
     @staticmethod
-    def process_webcam():
+    def process_webcam(camvid):
         try:
             trackbars=TrackBars()
-            cls_image=FromWebcam()
+            cls_image=FromWebcam(camvid)
             while True:
                 init_img=cls_image.read_image()
                 ProcessImage().inner_process(init_img,trackbars)
@@ -341,6 +342,8 @@ class ProcessImage:
         finally:
             cls_image.webcam_release()
             cv2.destroyAllWindows()
+        cls_image.webcam_release()
+        cv2.destroyAllWindows()
             
         
     @staticmethod
@@ -355,6 +358,7 @@ class ProcessImage:
                     break
         finally:
             cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
             
     @staticmethod
     def process_mobile_camera(url):
@@ -370,20 +374,23 @@ class ProcessImage:
                     break
         finally:
             cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
         
         
 def main(name,url=None): 
     if(name=="image"):
         ProcessImage().process_image(url)
     elif(name=="webcam"):
-        ProcessImage().process_webcam()
+        ProcessImage().process_webcam(0)
     elif(name=="camera"):
         ProcessImage().process_mobile_camera(url)
+    elif(name=="video"):
+        ProcessImage().process_webcam(url)
         
         
     
 if __name__=="__main__":
-    if not (args.image or args.webcam or args.camera):
+    if not (args.image or args.webcam or args.camera or args.video):
         parser.error("Please pass atleast one argument. --h for help")
     elif(args.image):
         main("image",args.image)
@@ -391,3 +398,5 @@ if __name__=="__main__":
         main("webcam")
     elif(args.camera):
         main("camera",args.camera)
+    elif(args.video):
+        main("video",args.video)
