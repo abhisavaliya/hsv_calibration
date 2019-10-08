@@ -14,8 +14,8 @@ group.add_argument("-v","--video",type=str, metavar="", help="Video Mode, Pass U
 args, unknown = parser.parse_known_args()
 
 class TrackBars:
-    name="Input"   
-    
+    name="Input"
+
     def __init__(self):
         def val(x):
             pass
@@ -40,24 +40,24 @@ class TrackBars:
         cv2.setTrackbarPos("H High",name,255)
         cv2.setTrackbarPos("S High",name,255)
         cv2.setTrackbarPos("V High",name,255)
-        
+
         cv2.createTrackbar("Switch 1: Erosion-Dilaton 2:Dilation-Erosion",name,0,2,val)
         cv2.createTrackbar("Erosion",name,0,25, val)
         cv2.createTrackbar("Erosion Iterations",name,1,20, val)
         cv2.createTrackbar("Dilation",name,0,25, val)
         cv2.createTrackbar("Dilation Iterations",name,1,20, val)
-        
+
         cv2.createTrackbar("Canny: Threshold 1",name,0,1000, val)
         cv2.createTrackbar("Canny: Threshold 2",name,0,1000, val)
-        
-    
-    
+
+
+
     def get_all_values(self):
         name=self.name
         empty_img=np.zeros((700,1000,3),dtype="uint8")
         x=0
         y=0
-        
+
         brightness=cv2.getTrackbarPos("Brightness",name)
         darkness=cv2.getTrackbarPos("Darkness",name)
         b_blur=cv2.getTrackbarPos("Normal Blur",name)
@@ -73,16 +73,16 @@ class TrackBars:
         s_high=cv2.getTrackbarPos("S High",name)
         v_low=cv2.getTrackbarPos("V Low",name)
         v_high=cv2.getTrackbarPos("V High",name)
-        
+
         switch_val=cv2.getTrackbarPos("Switch 1: Erosion-Dilaton 2:Dilation-Erosion",name)
         erosion=cv2.getTrackbarPos("Erosion",name)
         erosion_iters=cv2.getTrackbarPos("Erosion Iterations",name)
         dilation=cv2.getTrackbarPos("Dilation",name)
         dilation_iters=cv2.getTrackbarPos("Dilation Iterations",name)
-        
+
         canny_t1=cv2.getTrackbarPos("Canny: Threshold 1",name)
         canny_t2=cv2.getTrackbarPos("Canny: Threshold 2",name)
-        
+
         if((b_blur%2==0) & (b_blur!=0)):
             b_blur=b_blur+1
         if((g_blur%2==0) & (g_blur!=0)):
@@ -91,9 +91,9 @@ class TrackBars:
             m_blur=m_blur+1
         if((bl_blur%2==0) & (bl_blur!=0)):
             bl_blur=bl_blur+1
-        
+
         variables_names={   "Brightness":brightness,
-                            "Darkness":darkness,                            
+                            "Darkness":darkness,
                             "Box Blur Kernel":b_blur,
                             "Gaussian Blur Kernel":g_blur,
                             "Gaussian Deviation":g_dev,
@@ -114,16 +114,16 @@ class TrackBars:
                             "Dilation Iterations":dilation_iters,
                             "Canny Threshold 1":canny_t1,
                             "Canny Threshold 2":canny_t2}
-        
-        
+
+
         for idx,(key,value) in enumerate(variables_names.items(),start=1):
             cv2.putText(empty_img,str(key)+" = "+str(value),(x,y+idx*25),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,(255,255,255))
-        
+
         cv2.putText(empty_img,"HSV Lower Range: [ "+str(h_low)+", "+str(s_low)+", "+str(v_low)+" ]",(x,y+590),cv2.FONT_ITALIC,1,(0,255,0))
         cv2.putText(empty_img,"HSV Upper Range: [ "+str(h_high)+", "+str(s_high)+", "+str(v_high)+" ]",(x,y+630),cv2.FONT_ITALIC,1,(0,255,0))
-    
+
         return empty_img
-        
+
     def get_values(self):
         name=self.name
         hue_low=cv2.getTrackbarPos("H Low",name)
@@ -132,37 +132,37 @@ class TrackBars:
         sat_high=cv2.getTrackbarPos("S High",name)
         val_low=cv2.getTrackbarPos("V Low",name)
         val_high=cv2.getTrackbarPos("V High",name)
-        
+
         if(hue_high<=hue_low):
             cv2.setTrackbarPos("H High",name,hue_low)
-            
+
         if(hue_high<=hue_low):
             cv2.setTrackbarPos("H Low",name,hue_high)
-            
+
         if(sat_high<=sat_low):
             cv2.setTrackbarPos("S High",name,sat_low)
-            
+
         if(sat_high<=sat_low):
             cv2.setTrackbarPos("S Low",name,sat_high)
-        
+
         if(val_high<=val_low):
             cv2.setTrackbarPos("V High",name,val_low)
-        
+
         if(val_high<=val_low):
-            cv2.setTrackbarPos("V Low",name,val_high)  
-        
+            cv2.setTrackbarPos("V Low",name,val_high)
+
         return np.array([hue_low,sat_low,val_low]),np.array([hue_high,sat_high,val_high])
-    
+
     def blur_image(self,image):
         b_blur=cv2.getTrackbarPos("Normal Blur",self.name)
         g_blur=cv2.getTrackbarPos("Gaussian Blur",self.name)
         m_blur=cv2.getTrackbarPos("Median Blur",self.name)
         bl_blur=cv2.getTrackbarPos("Bilateral Blur",self.name)
-        
+
         g_deviation=cv2.getTrackbarPos("Guassian Deviation",self.name)
         sigma_color=cv2.getTrackbarPos("Sigma Color",self.name)
         sigma_space=cv2.getTrackbarPos("Sigma Space",self.name)
-        
+
         if(b_blur>0):
             cv2.setTrackbarPos("Gaussian Blur",self.name,0)
             cv2.setTrackbarPos("Median Blur",self.name,0)
@@ -170,14 +170,14 @@ class TrackBars:
             cv2.setTrackbarPos("Guassian Deviation",self.name,0)
             cv2.setTrackbarPos("Sigma Color",self.name,0)
             cv2.setTrackbarPos("Sigma Space",self.name,0)
-            
+
             blur_val=b_blur
             if((blur_val%2)==1):
                 blurred_img=cv2.blur(image,(blur_val,blur_val))
             else:
                 blurred_img=cv2.blur(image,(blur_val+1,blur_val+1))
             return blurred_img
-        
+
         if(g_blur>0):
             cv2.setTrackbarPos("Normal Blur",self.name,0)
             cv2.setTrackbarPos("Median Blur",self.name,0)
@@ -190,7 +190,7 @@ class TrackBars:
             else:
                 blurred_img=cv2.GaussianBlur(image,(blur_val+1,blur_val+1),g_deviation)
             return blurred_img
-        
+
         if(m_blur>0):
             cv2.setTrackbarPos("Gaussian Blur",self.name,0)
             cv2.setTrackbarPos("Normal Blur",self.name,0)
@@ -204,20 +204,20 @@ class TrackBars:
             else:
                 blurred_img=cv2.medianBlur(image,blur_val+1)
             return blurred_img
-        
+
         if(bl_blur>0):
             cv2.setTrackbarPos("Gaussian Blur",self.name,0)
             cv2.setTrackbarPos("Median Blur",self.name,0)
             cv2.setTrackbarPos("Normal Blur",self.name,0)
             cv2.setTrackbarPos("Guassian Deviation",self.name,0)
-        
+
             blur_val=bl_blur
             if((blur_val%2)==1):
                 blurred_img=cv2.bilateralFilter(image,blur_val,sigma_color,sigma_space)
             else:
                 blurred_img=cv2.bilateralFilter(image,blur_val+1,sigma_color,sigma_space)
             return blurred_img
-        
+
         if(((b_blur==0) & (g_blur==0)) & ((bl_blur==0) & (m_blur==0))):
             blurred_img=cv2.blur(image,(1,1))
             return blurred_img
@@ -228,74 +228,74 @@ class TrackBars:
         t2=cv2.getTrackbarPos("Canny: Threshold 2",self.name)
         canny_image=cv2.Canny(image,t1,t2)
         return canny_image
-    
+
     def erosion_image(self,image):
         erosion_val=cv2.getTrackbarPos("Erosion",self.name)
         erosion_kernel=np.ones((erosion_val,erosion_val),np.uint8)
         erosion_iterations=cv2.getTrackbarPos("Erosion Iterations",self.name)
         erosion_image=cv2.erode(image,erosion_kernel,iterations=erosion_iterations)
         return erosion_image
-    
+
     def dilation_image(self,image):
         dilate_val=cv2.getTrackbarPos("Dilation",self.name)
         dilate_kernel=np.ones((dilate_val,dilate_val),np.uint8)
         dilate_iterations=cv2.getTrackbarPos("Dilation Iterations",self.name)
         dilate_image=cv2.dilate(image,dilate_kernel,iterations=dilate_iterations)
         return dilate_image
-    
-    
+
+
     def switch_e_d(self):
         switch_val=cv2.getTrackbarPos("Switch 1: Erosion-Dilaton 2:Dilation-Erosion",self.name)
         return switch_val
-    
+
     def brightness_darkness(self,image):
         brightness=cv2.getTrackbarPos("Brightness",self.name)
         darkness=cv2.getTrackbarPos("Darkness",self.name)
-        
+
         b_kernel=np.ones(image.shape,dtype="uint8")*brightness
         d_kernel=np.ones(image.shape,dtype="uint8")*darkness
-        
+
         bright_img=cv2.add(image,b_kernel)
         dark_img=cv2.subtract(bright_img,d_kernel)
-        
+
         return dark_img
-        
-        
-        
-        
-        
+
+
+
+
+
 class FromImage:
     def __init__(self,url):
         self.image=cv2.imread(url)
-        
+
     def read_image(self):
         return self.image
-    
-        
+
+
 class FromWebcam:
     def __init__(self,camvid=0):
         self.camvid=camvid
         self.webcam=cv2.VideoCapture(self.camvid,cv2.CAP_DSHOW)
-          
+
     def read_image(self):
         _,self.frame=self.webcam.read()
         self.frame = cv2.flip(self.frame,1)
-        return self.frame 
-    
+        return self.frame
+
     def webcam_release(self):
         self.webcam.release()
-        
-        
 
-class ProcessImage:  
-    
-    
-    
-    def inner_process(self,init_img,trackbars):
-        
+
+
+class ProcessImage:
+
+
+
+    def inner_process(init_img,trackbars):
+
         bright_dark_img=trackbars.brightness_darkness(init_img)
         blurred_img=trackbars.blur_image(bright_dark_img)
-        
+
         hsv_img=cv2.cvtColor(blurred_img,cv2.COLOR_BGR2HSV)
         lower_range,upper_range=trackbars.get_values()
 
@@ -303,23 +303,23 @@ class ProcessImage:
             eroded_img=trackbars.erosion_image(hsv_img)
             dilated_img=trackbars.dilation_image(eroded_img)
             mask=cv2.inRange(dilated_img,lower_range,upper_range)
-        
+
         elif(trackbars.switch_e_d()==2):
             dilated_img=trackbars.dilation_image(hsv_img)
             eroded_img=trackbars.erosion_image(dilated_img)
             mask=cv2.inRange(eroded_img,lower_range,upper_range)
         else:
             mask=cv2.inRange(hsv_img,lower_range,upper_range)
-        
-        
+
+
         edge_mask_img=trackbars.image_edges(mask)
         edge_blurred_img=trackbars.image_edges(blurred_img)
         edge_hsv_img=trackbars.image_edges(hsv_img)
         output=cv2.bitwise_and(init_img,init_img,mask=mask)
-        
+
 
         output_vars=trackbars.get_all_values()
-        
+
         cv2.imshow("Values Output",output_vars)
         cv2.imshow("Input Image",init_img)
         cv2.imshow("Blurred", blurred_img)
@@ -330,65 +330,64 @@ class ProcessImage:
         cv2.imshow("Output",output)
 
     @staticmethod
-    def process_webcam(camvid):
+    def process_webcam(camvid=0):
         try:
             trackbars=TrackBars()
             cls_image=FromWebcam(camvid)
             while True:
                 init_img=cls_image.read_image()
-                ProcessImage().inner_process(init_img,trackbars)
+                ProcessImage.inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
             cls_image.webcam_release()
             cv2.destroyAllWindows()
-        cls_image.webcam_release()
         cv2.destroyAllWindows()
-            
-        
+
+
     @staticmethod
-    def process_image(url):
+    def process_image(local_url):
         try:
             trackbars=TrackBars()
-            cls_image=FromImage(url)
+            cls_image=FromImage(local_url)
             while True:
                 init_img=cls_image.read_image()
-                ProcessImage().inner_process(init_img,trackbars)
+                ProcessImage.inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
             cv2.destroyAllWindows()
         cv2.destroyAllWindows()
-            
+
     @staticmethod
-    def process_mobile_camera(url):
+    def process_mobile_camera(ip_address):
         try:
             trackbars=TrackBars()
-            url=url+"shot.jpg"
+            ip_address="http://"+ip_address+"/shot.jpg"
             while True:
-                imgRequest=requests.get(url)
+                imgRequest=requests.get(ip_address)
                 imgArray=np.array(bytearray(imgRequest.content),dtype=np.uint8)
                 init_img=cv2.imdecode(imgArray,-1)
-                ProcessImage().inner_process(init_img,trackbars)
+                ProcessImage.inner_process(init_img,trackbars)
                 if(cv2.waitKey(1)==13):
                     break
         finally:
             cv2.destroyAllWindows()
         cv2.destroyAllWindows()
-        
-        
-def main(name,url=None): 
+
+
+def main(name,url=None):
     if(name=="image"):
-        ProcessImage().process_image(url)
+        ProcessImage.process_image(url)
     elif(name=="webcam"):
-        ProcessImage().process_webcam(0)
+        ProcessImage.process_webcam(0)
     elif(name=="camera"):
-        ProcessImage().process_mobile_camera(url)
+        ProcessImage.process_mobile_camera(url)
     elif(name=="video"):
-        ProcessImage().process_webcam(url)
-        
-        
-    
+        ProcessImage.process_webcam(url)
+
+
+
 if __name__=="__main__":
     if not (args.image or args.webcam or args.camera or args.video):
         parser.error("Please pass atleast one argument. --h for help")
