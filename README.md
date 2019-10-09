@@ -61,6 +61,8 @@ ProcessImage.process_mobile_camera("192.168.2.15:8080")
 pip install hsv-calibration 
 ```
 
+[PyPi](https://pypi.org/project/hsv-calibration/)
+
 # Feedback and Suggestions
 For feedback and suggestions, please email me on `abhisavaliya01@gmail.com`
 
