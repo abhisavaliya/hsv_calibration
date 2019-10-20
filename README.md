@@ -4,7 +4,7 @@ Wth `HSV Calibration`, get the accurate `HSV Upper and Lower Range` from the `im
 
 # Detect Colors Using:
 - `Local Images` (Provide *url*)
-- `Webcam`
+- `Webcam` 
 - `Mobile Camera` (Provide *IP address* using IPCam)
 
 # Examples
@@ -16,6 +16,8 @@ ProcessImage.process_image("C:\Downloads\image.jpg")   // (r"C:\Downloads\image.
 ```
 2). `Webcam`
 ```sh
+NOTE: Please use webcam in your project with (cv2.CAP_DSHOW): cv2.VideoCapture(0,cv2.CAP_DSHOW)
+
 from hsv_calibration import ProcessImage
 ProcessImage.process_webcam()
 ```
