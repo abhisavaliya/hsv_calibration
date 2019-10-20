@@ -22,8 +22,8 @@ class TrackBars:
         name=self.name
         cv2.namedWindow(name)
         cv2.resizeWindow(name,600,800)
-        cv2.createTrackbar("Brightness",name,0,99,val)
-        cv2.createTrackbar("Darkness",name,0,99,val)
+        cv2.createTrackbar("Brightness",name,0,200,val)
+        cv2.createTrackbar("Darkness",name,0,200,val)
         cv2.createTrackbar("Normal Blur",name,0,99,val)
         cv2.createTrackbar("Gaussian Blur",name,0,99,val)
         cv2.createTrackbar("Gaussian Deviation",name,0,99,val)
@@ -31,8 +31,8 @@ class TrackBars:
         cv2.createTrackbar("Bilateral Blur",name,0,11,val)
         cv2.createTrackbar("Sigma Color",name,0,999,val)
         cv2.createTrackbar("Sigma Space",name,0,999,val)
-        cv2.createTrackbar("H Low",name,0,179,val)
-        cv2.createTrackbar("H High",name,0,179,val)
+        cv2.createTrackbar("H Low",name,0,180,val)
+        cv2.createTrackbar("H High",name,0,180,val)
         cv2.createTrackbar("S Low",name,0,255, val)
         cv2.createTrackbar("S High",name,0,255, val)
         cv2.createTrackbar("V Low",name,0,255, val)
@@ -42,10 +42,10 @@ class TrackBars:
         cv2.setTrackbarPos("V High",name,255)
 
         cv2.createTrackbar("Switch 1: Erosion-Dilaton 2:Dilation-Erosion",name,0,2,val)
-        cv2.createTrackbar("Erosion",name,0,25, val)
-        cv2.createTrackbar("Erosion Iterations",name,1,20, val)
-        cv2.createTrackbar("Dilation",name,0,25, val)
-        cv2.createTrackbar("Dilation Iterations",name,1,20, val)
+        cv2.createTrackbar("Erosion",name,0,50, val)
+        cv2.createTrackbar("Erosion Iterations",name,0,20, val)
+        cv2.createTrackbar("Dilation",name,0,50, val)
+        cv2.createTrackbar("Dilation Iterations",name,0,20, val)
 
         cv2.createTrackbar("Canny: Threshold 1",name,0,1000, val)
         cv2.createTrackbar("Canny: Threshold 2",name,0,1000, val)
@@ -153,7 +153,8 @@ class TrackBars:
 
         return np.array([hue_low,sat_low,val_low]),np.array([hue_high,sat_high,val_high])
 
-    def blur_image(self,image):
+    def blur_image(self,imagex):
+        image=imagex.copy()
         b_blur=cv2.getTrackbarPos("Normal Blur",self.name)
         g_blur=cv2.getTrackbarPos("Gaussian Blur",self.name)
         m_blur=cv2.getTrackbarPos("Median Blur",self.name)
@@ -223,20 +224,23 @@ class TrackBars:
             return blurred_img
 
 
-    def image_edges(self,image):
+    def image_edges(self,imagex):
+        image=imagex.copy()
         t1=cv2.getTrackbarPos("Canny: Threshold 1",self.name)
         t2=cv2.getTrackbarPos("Canny: Threshold 2",self.name)
         canny_image=cv2.Canny(image,t1,t2)
         return canny_image
 
-    def erosion_image(self,image):
+    def erosion_image(self,imagex):
+        image=imagex.copy()
         erosion_val=cv2.getTrackbarPos("Erosion",self.name)
         erosion_kernel=np.ones((erosion_val,erosion_val),np.uint8)
         erosion_iterations=cv2.getTrackbarPos("Erosion Iterations",self.name)
         erosion_image=cv2.erode(image,erosion_kernel,iterations=erosion_iterations)
         return erosion_image
 
-    def dilation_image(self,image):
+    def dilation_image(self,imagex):
+        image=imagex.copy()
         dilate_val=cv2.getTrackbarPos("Dilation",self.name)
         dilate_kernel=np.ones((dilate_val,dilate_val),np.uint8)
         dilate_iterations=cv2.getTrackbarPos("Dilation Iterations",self.name)
@@ -248,7 +252,8 @@ class TrackBars:
         switch_val=cv2.getTrackbarPos("Switch 1: Erosion-Dilaton 2:Dilation-Erosion",self.name)
         return switch_val
 
-    def brightness_darkness(self,image):
+    def brightness_darkness(self,imagex):
+        image=imagex.copy()
         brightness=cv2.getTrackbarPos("Brightness",self.name)
         darkness=cv2.getTrackbarPos("Darkness",self.name)
 
@@ -293,23 +298,25 @@ class ProcessImage:
 
     def inner_process(init_img,trackbars):
 
-        bright_dark_img=trackbars.brightness_darkness(init_img)
+        hsv_img=cv2.cvtColor(init_img,cv2.COLOR_BGR2HSV)
+        
+        bright_dark_img=trackbars.brightness_darkness(hsv_img)
         blurred_img=trackbars.blur_image(bright_dark_img)
 
-        hsv_img=cv2.cvtColor(blurred_img,cv2.COLOR_BGR2HSV)
+        
         lower_range,upper_range=trackbars.get_values()
 
         if(trackbars.switch_e_d()==1):
-            eroded_img=trackbars.erosion_image(hsv_img)
+            eroded_img=trackbars.erosion_image(blurred_img)
             dilated_img=trackbars.dilation_image(eroded_img)
             mask=cv2.inRange(dilated_img,lower_range,upper_range)
 
         elif(trackbars.switch_e_d()==2):
-            dilated_img=trackbars.dilation_image(hsv_img)
+            dilated_img=trackbars.dilation_image(blurred_img)
             eroded_img=trackbars.erosion_image(dilated_img)
             mask=cv2.inRange(eroded_img,lower_range,upper_range)
-        else:
-            mask=cv2.inRange(hsv_img,lower_range,upper_range)
+        elif(trackbars.switch_e_d()==0):
+            mask=cv2.inRange(blurred_img,lower_range,upper_range)
 
 
         edge_mask_img=trackbars.image_edges(mask)
