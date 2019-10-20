@@ -12,7 +12,7 @@ Wth `HSV Calibration`, get the accurate `HSV Upper and Lower Range` from the `im
 1). `Images`
 ```sh
 from hsv_calibration import ProcessImage
-ProcessImage.process_image("C:\Downloads\image.jpg")
+ProcessImage.process_image("C:\Downloads\image.jpg")   // (r"C:\Downloads\image.jpg")
 ```
 2). `Webcam`
 ```sh
@@ -22,7 +22,7 @@ ProcessImage.process_webcam()
 3). `Mobile Camera (Use IPCam to get the IP Address)`
 ```sh
 from hsv_calibration import ProcessImage
-ProcessImage.process_mobile_camera("http://192.168.2.15:8080/")
+ProcessImage.process_mobile_camera("192.168.2.15:8080")
 ```
 
 # New Features!
@@ -60,6 +60,8 @@ ProcessImage.process_mobile_camera("http://192.168.2.15:8080/")
 ```sh 
 pip install hsv-calibration 
 ```
+
+[PyPi](https://pypi.org/project/hsv-calibration/)
 
 # Feedback and Suggestions
 For feedback and suggestions, please email me on `abhisavaliya01@gmail.com`
